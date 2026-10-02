@@ -1,0 +1,148 @@
+1. LISTA DE REQUISITOS FUNCIONAIS
+
+
+RF-01 - Autenticar usuario
+O sistema deve permitir que o usuario informe email e senha para acessar as areas protegidas.
+
+RF-02 - Informar falha de autenticacao
+Quando o email nao existir, a senha estiver incorreta ou o usuario estiver inativo, o sistema deve exibir uma mensagem explicando a falha e manter o usuario na tela de login.
+
+RF-03 - Proteger paginas internas
+O sistema deve redirecionar para a tela de login qualquer visitante sem sessao autenticada que tente acessar as paginas internas.
+
+RF-04 - Exibir usuario conectado
+A pagina principal deve exibir o nome do usuario autenticado.
+
+RF-05 - Encerrar sessao
+A pagina principal deve oferecer uma opcao para sair. Ao utiliza-la, a sessao deve ser encerrada e o usuario deve retornar ao login.
+
+RF-06 - Navegar pelo sistema
+A pagina principal deve oferecer acesso ao cadastro de produtos/insumos e a gestao de estoque. As duas interfaces devem oferecer retorno a pagina principal.
+
+RF-07 - Listar produtos e insumos
+A interface de cadastro deve listar os itens armazenados no banco de dados, incluindo itens ativos e inativos, em ordem alfabetica pelo nome.
+
+RF-08 - Pesquisar produtos e insumos
+A interface de cadastro deve permitir pesquisa por nome, codigo ou categoria e atualizar a listagem para mostrar os registros correspondentes ao termo informado.
+
+RF-09 - Cadastrar produto ou insumo
+O sistema deve permitir cadastrar um item com codigo, nome, categoria, preco, estoque atual, estoque minimo e demais dados disponiveis no formulario.
+
+RF-10 - Validar cadastro e edicao
+O sistema deve impedir o salvamento quando codigo, nome ou categoria estiverem ausentes; o preco for invalido ou menor/igual a zero; ou estoque e peso forem invalidos ou negativos. Deve informar o usuario sobre o problema.
+
+RF-11 - Editar produto ou insumo
+O sistema deve permitir selecionar um item existente, carregar seus dados no formulario e salvar as alteracoes no banco de dados.
+
+RF-12 - Excluir produto ou insumo
+O sistema deve permitir solicitar a exclusao de um item e pedir confirmacao antes da operacao. Se o banco impedir a exclusao por existirem registros relacionados, o sistema deve informar a falha.
+
+RF-13 - Listar itens para movimentacao
+A interface de estoque deve listar os produtos ativos em ordem alfabetica pelo nome e apresentar o estoque atual e o estoque minimo.
+
+RF-14 - Selecionar item e tipo de movimentacao
+O usuario deve poder selecionar um produto e escolher entre entrada e saida de estoque.
+
+RF-15 - Registrar movimentacao
+O usuario deve informar quantidade positiva e data valida para a movimentacao. O sistema deve registrar o usuario, produto, tipo, data, quantidade e saldo anterior, e atualizar o estoque atual.
+
+RF-16 - Impedir saldo negativo
+O sistema nao deve permitir uma saida cuja quantidade seja maior que o estoque disponivel.
+
+RF-17 - Alertar estoque baixo
+Apos cada saida, se o estoque resultante ficar abaixo ou igual ao minimo configurado, o sistema deve exibir um alerta com o saldo atual e o minimo.
+
+RF-18 - Consultar historico
+A interface de estoque deve exibir o historico de movimentacoes, incluindo data, produto, tipo, quantidade, saldo anterior e usuario responsavel.
+
+RF-19 - Persistir dados
+Produtos, usuarios, fornecedores, materias-primas, ordens de producao e movimentacoes devem ser armazenados no banco de dados industria_db, respeitando chaves primarias e estrangeiras.
+
+
+8. DESCRITIVO DE CASOS DE TESTE DE SOFTWARE
+
+
+CT-01 - Login com credenciais validas
+Pre-condicao: existir usuario ativo com email e senha cadastrados.
+Passos: abrir login.php; informar email e senha validos; selecionar Entrar.
+Resultado : usuario autenticado e redirecionado para index.php; nome exibido na pagina principal.
+
+CT-02 - Login com senha incorreta
+Pre-condicao: existir usuario ativo com o email informado.
+Passos: informar email valido e senha incorreta; selecionar Entrar.
+Resultado : mensagem "Senha incorreta." visivel e permanencia na tela de login.
+
+CT-03 - Login com email inexistente
+Pre-condicao: usar email nao cadastrado.
+Passos: enviar email inexistente e uma senha.
+Resultado : mensagem de credenciais incorretas e permanencia na tela de login.
+
+CT-04 - Acesso sem autenticacao
+Pre-condicao: sessao encerrada ou navegador sem sessao autenticada.
+Passos: acessar diretamente produtos.php ou estoque.php.
+Resultado : redirecionamento para login.php.
+
+CT-05 - Logout
+Pre-condicao: usuario autenticado e na pagina principal.
+Passos: selecionar Sair; depois tentar abrir uma pagina interna diretamente.
+Resultado : retorno ao login e bloqueio do acesso interno sem nova autenticacao.
+
+CT-06 - Listar e pesquisar itens
+Pre-condicao: existirem varios produtos cadastrados.
+Passos: abrir produtos.php; confirmar a listagem; pesquisar por parte de um nome, codigo e categoria, um termo por vez.
+Resultado : lista inicial em ordem alfabetica; cada pesquisa mostra somente registros correspondentes. Itens inativos tambem aparecem no cadastro.
+
+CT-07 - Cadastrar produto valido
+Pre-condicao: usuario autenticado.
+Passos: preencher codigo unico, nome, categoria, preco maior que zero e valores nao negativos para estoque e peso; salvar.
+Resultado : mensagem de sucesso e novo item persistido e visivel na listagem.
+
+CT-08 - Rejeitar dados ausentes ou invalidos
+Pre-condicao: usuario autenticado.
+Passos: tentar salvar sem codigo, nome ou categoria; repetir com preco zero/texto invalido e estoque ou peso negativo.
+Resultado : salvamento impedido e mensagem de validacao exibida.
+
+CT-09 - Editar produto existente
+Pre-condicao: existir produto cadastrado.
+Passos: selecionar Editar; alterar um ou mais campos validos; salvar.
+Resultado : mensagem de sucesso e valores atualizados na listagem e no banco.
+
+CT-10 - Excluir produto
+Pre-condicao: existir produto sem ordens ou movimentacoes relacionadas.
+Passos: selecionar Excluir e confirmar.
+Resultado : produto removido e mensagem de sucesso. Em caso de item referenciado, exclusao recusada pelo banco e mensagem de erro exibida.
+
+CT-11 - Listagem e selecao para movimentacao
+Pre-condicao: existirem produtos ativos e inativos.
+Passos: abrir estoque.php; observar a tabela e as opcoes do campo Produto.
+Resultado : tabela ordenada alfabeticamente; apenas produtos ativos disponiveis para movimentacao.
+
+CT-12 - Registrar entrada
+Pre-condicao: usuario autenticado e produto ativo existente.
+Passos: selecionar produto, tipo Entrada, quantidade positiva e data valida; registrar.
+Resultado : movimento de entrada salvo no historico e estoque aumentado pela quantidade informada.
+
+CT-13 - Registrar saida acima do minimo
+Pre-condicao: produto com estoque suficiente para a saida e saldo final maior que o estoque minimo.
+Passos: registrar uma saida com produto, quantidade positiva e data valida.
+Resultado : movimento salvo, estoque reduzido e sem alerta de estoque baixo.
+
+CT-14 - Registrar saida no minimo ou abaixo dele
+Pre-condicao: produto com estoque suficiente para a saida.
+Passos: registrar saida que deixe o saldo final igual ao minimo; repetir em outro registro deixando-o abaixo do minimo.
+Resultado : movimento salvo, estoque atualizado e alerta exibido com estoque atual e minimo.
+
+CT-15 - Impedir saida maior que o estoque
+Pre-condicao: produto com estoque conhecido.
+Passos: tentar registrar saida maior que o saldo atual.
+Resultado : movimento nao registrado, estoque inalterado e mensagem de estoque insuficiente.
+
+CT-16 - Rejeitar dados de movimentacao invalidos
+Pre-condicao: usuario autenticado.
+Passos: tentar enviar quantidade zero/negativa, tipo diferente de Entrada/Saida ou data inexistente/invalida.
+Resultado : movimentacao nao registrada e mensagem de validacao exibida.
+
+CT-17 - Conferir historico de movimentacoes
+Pre-condicao: existir ao menos uma movimentacao registrada.
+Passos: abrir a secao de historico em estoque.php.
+Resultado : exibir data, produto, tipo, quantidade, saldo anterior e usuario correspondentes aos registros salvos.
